@@ -1,35 +1,14 @@
-use iced::widget::{Column, button, column, text};
+mod domain;
+mod infrastructure;
+mod ui;
 
-#[derive(Default)]
-struct Counter {
-    value: i64,
-}
-#[derive(Debug, Clone, Copy)]
-enum Message {
-    Increment,
-    Decrement,
-}
+use ui::app::DatabaseManagerApp;
+use ui::messages::Message;
 
-impl Counter {
-    fn update(&mut self, message: Message) {
-        match message {
-            Message::Increment => {
-                self.value += 1;
-            }
-            Message::Decrement => {
-                self.value -= 1;
-            }
-        }
-    }
-    fn view(&self) -> Column<Message> {
-        column![
-            button("+").on_press(Message::Increment),
-            text(self.value),
-            button("-").on_press(Message::Decrement),
-        ]
-    }
-}
-
-pub fn main() -> iced::Result {
-    iced::run("A cool counter", Counter::update, Counter::view)
+fn main() -> iced::Result {
+    iced::run(
+        "Rojava SaveSlot",
+        DatabaseManagerApp::update,
+        DatabaseManagerApp::view,
+    )
 }

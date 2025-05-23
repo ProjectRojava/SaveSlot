@@ -1,0 +1,31 @@
+# Development Dockerfile with hot reload
+FROM rust:1.75
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    libpq-dev \
+    libsqlite3-dev \
+    libmysqlclient-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install development tools
+RUN cargo install cargo-watch
+
+# Create app directory
+WORKDIR /app
+
+# Copy manifests
+COPY Cargo.toml Cargo.lock ./
+
+# Pre-build dependencies
+RUN mkdir src && echo "fn main() {}" > src/main.rs
+RUN cargo build && rm -rf src
+
+# Set up volume for source code
+VOLUME ["/app/src", "/app/tests"]
+
+# Default command for development
+CMD ["cargo", "watch", "-x", "run"]
